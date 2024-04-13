@@ -1,0 +1,31 @@
+logging:
+  config: "classpath:logback-stg.xml"
+
+spring:
+  datasource:
+    rw:
+      hikari:
+        username: ${DB_USER}
+        password: ${DB_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: ${DB_HOST}
+        maximum-pool-size: 5
+        minimum-idle: 2
+    ro:
+      hikari:
+        username: ${DB_USER}
+        password: ${DB_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: ${DB_HOST_READONLY}
+        maximum-pool-size: 5
+        minimum-idle: 2
+  jpa:
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /api-docs
+    url: /docs/swagger.yaml
+
+sentry:
+  dsn: ${SENTRY_DSN}

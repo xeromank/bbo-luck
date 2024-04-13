@@ -1,0 +1,22 @@
+logging:
+  config: "classpath:logback-prod.xml"
+
+spring:
+  datasource:
+    rw:
+      hikari:
+        username: ${DB_USER}
+        password: ${DB_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: ${DB_HOST}
+    ro:
+      hikari:
+        username: ${DB_USER}
+        password: ${DB_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: ${DB_HOST_READONLY}
+  jpa:
+    show-sql: true
+
+sentry:
+  dsn: ${SENTRY_DSN}

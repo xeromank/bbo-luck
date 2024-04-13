@@ -1,0 +1,10 @@
+logging:
+  config: "classpath:logback-local.xml"
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: "off"
+
+  datasource:
+    url: jdbc:h2:mem:///test_sellers
