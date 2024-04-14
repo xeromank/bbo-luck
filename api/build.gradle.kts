@@ -29,6 +29,11 @@ dependencies {
 
     // MVC
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+
+    // JPA
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     // CACHE & REDIS
     implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -38,6 +43,7 @@ dependencies {
 
     // Security
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
     // cloud-service
     implementation("com.amazonaws:aws-java-sdk-s3:${Dependency.awsSdkVersion}")
