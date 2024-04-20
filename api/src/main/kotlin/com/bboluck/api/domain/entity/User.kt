@@ -25,13 +25,17 @@ class User(
     @Column(name = "username", nullable = false, length = 40)
     var username: String,
 
+    @Comment("비밀번호")
+    @Column(name = "password", nullable = true)
+    var password: String?,
+
     @Comment("사용자 생년월일")
-    @Column(name = "birth_date", nullable = false, length = 10)
-    var birthDate: String,
+    @Column(name = "birth_date", nullable = true, length = 10)
+    var birthDate: String?,
 
     @Comment("사용자 닉네임")
-    @Column(name = "nickname", nullable = false, length = 40)
-    var nickname: String,
+    @Column(name = "nickname", nullable = true, length = 40)
+    var nickname: String?,
 
 ) {
     @Id

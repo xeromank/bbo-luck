@@ -17,10 +17,11 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 
-
 @Entity
-@Table(name = "bboluck_sns_users",
-    indexes = [Index(unique = true, columnList = "oauth_id, oauth_provider")])
+@Table(
+    name = "bboluck_sns_users",
+    indexes = [Index(unique = true, columnList = "oauth_id, oauth_provider")]
+)
 class SnsUser(
     @Column(name = "user_id")
     @Comment("사용자 ID FK")

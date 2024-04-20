@@ -7,5 +7,12 @@
 <body>
 로그인 페이지 입니다.
 <b th:text="${data}"></b>
+<form method="post" action="/login-process">
+    <input type="text" name="email"/>
+    <input type="text" name="password"/>
+    <button>로그인</button>
+</form>
+<a href="/oauth2/authorization/google">구글 로그인</a>
+
 </body>
 </html>

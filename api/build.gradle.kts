@@ -37,6 +37,8 @@ dependencies {
 
     // CACHE & REDIS
     implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("com.github.ben-manes.caffeine:caffeine")
+    implementation("com.github.gotson:spring-session-caffeine:2.0.0")
 
     // actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")

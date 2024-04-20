@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="port" source="server.port"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <lineSeparator>SYSTEM</lineSeparator>
+            <providers>
+                <pattern>
+                    <omitEmptyFields>true</omitEmptyFields>
+                    <pattern>
+                        {
+                        "timestamp": "%d{yyyy-MM-dd HH:mm:ss.SSS}",
+                        "logger": "%logger",
+                        "level": "%level",
+                        "thread": "%thread",
+                        "message": "#tryJson{%message}",
+                        "dd.trace_id": "%mdc{dd.trace_id}",
+                        "dd.span_id": "%mdc{dd.span_id}",
+                        "dd.service": "%mdc{dd.service}",
+                        "dd.env": "%mdc{dd.env}",
+                        "dd.version": "%mdc{dd.version}",
+                        "error.message": "%mdc{error.message}",
+                        "error.stack": "%mdc{error.stack}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <logger name="org.springframework" level="INFO"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>
