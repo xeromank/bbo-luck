@@ -42,7 +42,7 @@ class BboLuckOAuth2UserService(
 
         return AuthenticatedUserDTO(
             userId.toString(),
-            "ROLE_USER",
+            "USER",
             oAuth2User.attributes
         )
     }

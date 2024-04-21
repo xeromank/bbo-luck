@@ -1,7 +1,8 @@
 package com.bboluck.api.application.page
 
-import org.springframework.security.core.Authentication
-import org.springframework.security.oauth2.core.user.OAuth2User
+import com.bboluck.api.security.resolver.AuthenticatedUser
+import com.bboluck.api.security.resolver.AuthenticatedUserDTO
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,12 +18,23 @@ class LoginPage {
         return "login"
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @ResponseBody
-    @GetMapping("/test/login")
-    fun testLogin(authentication: Authentication): String {
-        println(authentication.principal)
-        val oAuth2User = authentication.principal as OAuth2User
-        println(oAuth2User.attributes)
-        return "1234"
+    @GetMapping("/test/user")
+    fun testUser(
+        @AuthenticatedUser
+        user: AuthenticatedUserDTO
+    ): Pair<String, String?> {
+        return Pair(user.username, user.roles)
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @ResponseBody
+    @GetMapping("/test/staff")
+    fun testStaff(
+        @AuthenticatedUser
+        user: AuthenticatedUserDTO
+    ): Pair<String, String?> {
+        return Pair(user.username, user.roles)
     }
 }

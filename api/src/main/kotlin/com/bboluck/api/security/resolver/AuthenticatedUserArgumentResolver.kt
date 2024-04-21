@@ -1,9 +1,8 @@
 package com.bboluck.api.security.resolver
 
 import org.springframework.core.MethodParameter
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
@@ -24,8 +23,11 @@ class AuthenticatedUserArgumentResolver : HandlerMethodArgumentResolver {
         val authentication = SecurityContextHolder.getContext().authentication
             ?: throw IllegalArgumentException("AuthenticatedUser cannot be null")
 
-        val user: User = authentication.principal as User
-        val roles: String = (user.authorities as List<GrantedAuthority>).map { it.authority }.joinToString { "," }
-        return AuthenticatedUserDTO(user.username, roles)
+        val userDetails = authentication.principal as UserDetails
+        val authorities = userDetails.authorities
+        val roles = authorities.asSequence().map {
+            it.authority
+        }.joinToString(",")
+        return AuthenticatedUserDTO(userDetails.username, roles)
     }
 }

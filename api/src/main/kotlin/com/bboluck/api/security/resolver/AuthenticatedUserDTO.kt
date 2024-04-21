@@ -54,7 +54,13 @@ data class AuthenticatedUserDTO(
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val collect: MutableCollection<GrantedAuthority> = ArrayList()
-        roles?.split(",")?.map { GrantedAuthority { it } }?.let { collect.addAll(it) }
+        roles?.split(",")?.map {
+            GrantedAuthority {
+                it
+            }
+        }?.let {
+            collect.addAll(it)
+        }
         return collect
     }
 }

@@ -4,46 +4,38 @@ import com.bboluck.api.security.resolver.AuthenticatedUser
 import com.bboluck.api.security.resolver.AuthenticatedUserDTO
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 
-// 사용자 정보 조회
-const val GET_USER = "/api/v1/user"
+// 응모권 발행(광고시청 후)
+const val POST_PUBLISH_TICKET = "/api/v1/ticket"
 
-// 이벤트 참여 기록 조회
-const val GET_USER_EVENT_HISTORY = "/api/v1/user/events"
-
-// 응모권 관련 기록 조회
-const val GET_USER_TICKET_HISTORY = "/api/v1/user/tickets"
+// 응모권 발행 체크(광고 시청 가능 여부)
+const val GET_POSSIBLE_PUBLISH_CHECK = "/api/v1/ticket/possible/check"
 
 @RestController
-class UserController {
-
-    @PreAuthorize("hasAuthority('USER')")
-    @GetMapping(GET_USER)
-    fun user(
-        @AuthenticatedUser
-        user: AuthenticatedUserDTO,
-    ): String {
-        return user.username
-    }
+class TicketController {
 
     @PreAuthorize("hasAuthority('USER')")
     @ResponseBody
-    @GetMapping(GET_USER_EVENT_HISTORY)
-    fun getUserEventsHistory(
+    @PostMapping(POST_PUBLISH_TICKET)
+    fun publicTicket(
         @AuthenticatedUser
         user: AuthenticatedUserDTO,
+        @PathVariable eventId: String
     ): Pair<String, String?> {
         return Pair(user.username, user.roles)
     }
 
     @PreAuthorize("hasAuthority('USER')")
     @ResponseBody
-    @GetMapping(GET_USER_TICKET_HISTORY)
-    fun getUserTicketHistory(
+    @GetMapping(GET_POSSIBLE_PUBLISH_CHECK)
+    fun checkPossiblePublish(
         @AuthenticatedUser
         user: AuthenticatedUserDTO,
+        @PathVariable eventId: String
     ): Pair<String, String?> {
         return Pair(user.username, user.roles)
     }
