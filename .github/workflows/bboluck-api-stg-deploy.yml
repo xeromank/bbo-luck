@@ -1,0 +1,98 @@
+name: CD(bbo-luck-api-staging-deploy)
+
+on:
+  push:
+#    branches:
+#      - main
+    paths:
+      - 'api/**'
+      - 'api-common/**'
+      - 'buildSrc/src/main/kotlin/Constant.kt'
+      - '.github/workflows/bboluck-api-stg-deploy.yml'
+#  pull_request:
+#    types: [closed]
+#    branches:
+#      - main
+#    paths:
+#      - 'api/**'
+#      - 'buildSrc/src/main/kotlin/Constant.kt'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    environment: stg
+#    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # for ECR & S3
+      # - name: Install amazon-ecr-credential-helper
+      #   run: sudo apt-get install -y amazon-ecr-credential-helper
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::058264293737:role/github-action-role
+          aws-region: ap-northeast-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # for Jib
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Define Image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: bboluck-api
+        run: |
+          echo "IMAGE=$ECR_REGISTRY/stg/$ECR_REPOSITORY:$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+
+      # build & image push
+      - name: Build & Image Push
+        run: |
+          ./gradlew -Dspring.profiles.active=stg --stacktrace :api:bootBuildImage --imageName=$IMAGE --no-daemon
+          docker push $IMAGE
+
+#      # update tag
+#      - uses: payhereinc/update-manifest-image-tag@main
+#        with:
+#          application-name: 'bbo-luck-api'
+#          image-tag: ${{ env.IMAGE }}
+#          profile: 'stg'
+#          bot-pem: ${{ secrets.GH_PAYHERE_CI_PEM }}
+#          bot-app-id: ${{ secrets.GH_PAYHERE_CI_APP_ID }}
+
+#  notify:
+#    environment: stg
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    if: github.event.pull_request.merged == true
+#    env: # SUCCESS CASE
+#      SLACK_COLOR: '#2EB67D'
+#      SLACK_MESSAGE: 'stg/bbo-luck-api `${{ github.sha }}`, `lastest` EKS 배포 :rocket:'
+#    steps:
+#      - name: Set env when deploy failure
+#        if: ${{ needs.deploy.result == 'failure' }}
+#        run: |
+#          echo "SLACK_COLOR=#E01E5A" >> $GITHUB_ENV
+#          echo "SLACK_MESSAGE=stg/bbo-luck-api \`${{ github.sha }}\`, \`lastest\` 배포 실패" >> $GITHUB_ENV
+#
+#      - name: Notify docker push to Slack
+#        uses: rtCamp/action-slack-notify@master
+#        env:
+#          SLACK_CHANNEL: notify_deployment-stage
+#          SLACK_COLOR: ${{ env.SLACK_COLOR }}
+#          SLACK_MESSAGE: ${{ env.SLACK_MESSAGE }}
+#          SLACK_TITLE: Message
+#          SLACK_USERNAME: Payhere GitHub Actions
+#          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_STG }}
